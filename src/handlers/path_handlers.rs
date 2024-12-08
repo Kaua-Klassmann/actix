@@ -1,5 +1,5 @@
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web::Path, HttpResponse, Responder};
 
-pub async fn hello(name: web::Path<String>) -> impl Responder {
+pub async fn hello(name: Path<String>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello {}", name))
 }
