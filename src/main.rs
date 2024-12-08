@@ -6,6 +6,8 @@ mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()>{
+    println!("Server running in port 3000");
+
     HttpServer::new(|| {
         App::new()
             .wrap(
