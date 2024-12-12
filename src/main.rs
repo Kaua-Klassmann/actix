@@ -40,7 +40,8 @@ async fn main() -> std::io::Result<()>{
             .configure(routes::path_routes::configure_path_routes)
             .configure(routes::app_data_routes::configure_app_data_routes)
     })
-    .bind(("127.0.0.1", 3000))?
+    .bind(("127.0.0.1", 3000))
+    .unwrap()
     .run()
     .await
 }
