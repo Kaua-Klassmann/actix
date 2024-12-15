@@ -1,14 +1,10 @@
 use std::sync::Mutex;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{web::Data, App, HttpServer};
 use actix_cors::Cors;
 
 mod handlers;
 mod routes;
-
-struct AppState {
-    token: String
-}
 
 struct AppStateWithMutex {
     counter: Mutex<i32>
@@ -18,11 +14,7 @@ struct AppStateWithMutex {
 async fn main() -> std::io::Result<()>{
     println!("Server running in port 3000");
 
-    let token: web::Data<AppState> = web::Data::new(AppState {
-        token: "acyrbq3y".to_string()
-    });
-
-    let counter: web::Data<AppStateWithMutex> = web::Data::new(AppStateWithMutex {
+    let counter: Data<AppStateWithMutex> = Data::new(AppStateWithMutex {
         counter: Mutex::new(0)
     });
 
@@ -34,7 +26,6 @@ async fn main() -> std::io::Result<()>{
                     .allow_any_method()
                     .allow_any_header()
             )
-            .app_data(token.clone())
             .app_data(counter.clone())
             .configure(routes::static_routes::configure_static_routes)
             .configure(routes::path_routes::configure_path_routes)
