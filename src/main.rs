@@ -6,6 +6,8 @@ use actix_cors::Cors;
 mod handlers;
 mod routes;
 
+use routes::*;
+
 struct AppStateWithMutex {
     counter: Mutex<i32>
 }
@@ -27,9 +29,10 @@ async fn main() -> std::io::Result<()>{
                     .allow_any_header()
             )
             .app_data(counter.clone())
-            .configure(routes::static_routes::configure_static_routes)
-            .configure(routes::path_routes::configure_path_routes)
-            .configure(routes::app_data_routes::configure_app_data_routes)
+            .configure(static_routes::configure_static_routes)
+            .configure(path_routes::configure_path_routes)
+            .configure(app_data_routes::configure_app_data_routes)
+            .configure(query_routes::configure_query_routes)
     })
     .bind(("127.0.0.1", 3000))
     .unwrap()
