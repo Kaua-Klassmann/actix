@@ -33,6 +33,7 @@ async fn main() -> std::io::Result<()>{
             .configure(path_routes::configure_path_routes)
             .configure(app_data_routes::configure_app_data_routes)
             .configure(query_routes::configure_query_routes)
+            .configure(json_routes::configure_json_routes)
     })
     .bind(("127.0.0.1", 3000))
     .unwrap()
