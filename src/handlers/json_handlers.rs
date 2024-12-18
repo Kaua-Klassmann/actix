@@ -1,4 +1,4 @@
-use actix_web::{http::header::ContentType, web::Json, HttpResponse, Responder};
+use actix_web::{web::Json, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -9,17 +9,14 @@ pub struct Info {
 #[derive(Serialize)]
 pub struct Resp {
     name: String,
-    has_letters: Option<bool>
+    has_3_or_more_letters: bool
 }
 
 pub async fn json(json: Json<Info>) -> impl Responder {
-    let mut resp = Resp { name: json.name.clone(), has_letters: None };
+    let resp = Resp {
+        name: json.name.clone(),
+        has_3_or_more_letters: if json.name.len() > 2 {true} else {false}
+    };
 
-    if json.name.len() > 2 {
-        resp.has_letters = Some(true);
-    }
-
-    let body = serde_json::to_string(&resp).unwrap();
-
-    HttpResponse::Ok().content_type(ContentType::json()).body(body)
+    HttpResponse::Ok().json(resp)
 }
