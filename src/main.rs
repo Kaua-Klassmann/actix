@@ -1,6 +1,4 @@
-use std::sync::Mutex;
-
-use actix_web::{web::Data, App, HttpServer};
+use actix_web::{App, HttpServer};
 use actix_cors::Cors;
 
 mod handlers;
@@ -8,19 +6,18 @@ mod routes;
 
 use routes::*;
 
-struct AppStateWithMutex {
-    counter: Mutex<i32>
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()>{
-    println!("Server running in port 3000");
+    dotenv::dotenv().ok();
 
-    let counter: Data<AppStateWithMutex> = Data::new(AppStateWithMutex {
-        counter: Mutex::new(0)
-    });
+    let app_port: u16 = dotenv::var("APP_PORT")
+        .ok()
+        .and_then(|p: String| p.parse().ok())
+        .unwrap_or(3000);
 
-    HttpServer::new(move || {
+    println!("Server running in port {}", app_port);
+
+    HttpServer::new(|| {
         App::new()
             .wrap(
                 Cors::default()
@@ -28,14 +25,12 @@ async fn main() -> std::io::Result<()>{
                     .allow_any_method()
                     .allow_any_header()
             )
-            .app_data(counter.clone())
             .configure(static_routes::configure_static_routes)
             .configure(path_routes::configure_path_routes)
-            .configure(app_data_routes::configure_app_data_routes)
             .configure(query_routes::configure_query_routes)
             .configure(json_routes::configure_json_routes)
     })
-    .bind(("127.0.0.1", 3000))
+    .bind(("127.0.0.1", app_port))
     .unwrap()
     .run()
     .await
