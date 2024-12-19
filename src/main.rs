@@ -1,14 +1,18 @@
-use actix_web::{App, HttpServer};
+use actix_web::{web, App, HttpServer};
 use actix_cors::Cors;
+use sea_orm::{Database, DatabaseConnection};
 
+mod config;
 mod handlers;
 mod routes;
 
+use config::app_state::AppState;
 use routes::*;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()>{
-    dotenv::dotenv().ok();
+    let db: DatabaseConnection = Database::connect((*config::database::OPT_DB).clone())
+        .await.expect("Failed to connect in database");
 
     let app_port: u16 = dotenv::var("APP_PORT")
         .ok()
@@ -17,7 +21,7 @@ async fn main() -> std::io::Result<()>{
 
     println!("Server running in port {}", app_port);
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
             .wrap(
                 Cors::default()
@@ -25,6 +29,7 @@ async fn main() -> std::io::Result<()>{
                     .allow_any_method()
                     .allow_any_header()
             )
+            .app_data(web::Data::new( AppState { db: db.clone() } ))
             .configure(static_routes::configure_static_routes)
             .configure(path_routes::configure_path_routes)
             .configure(query_routes::configure_query_routes)
