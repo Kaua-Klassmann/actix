@@ -1,16 +1,18 @@
-# Iniciar configurações da migration
+# Repositório "colinha" de actix
+
+## Iniciar configurações da migration
 
 ```
 sea-orm-cli migrate init
 ```
 
-# Gerar migration para uma tabela
+## Gerar migration para uma tabela
 
 ```
 sea-orm-cli migrate generate create_users_table
 ```
 
-# Iniciar migrations
+## Iniciar migrations
 
 ```
 sea-orm-cli migrate up
