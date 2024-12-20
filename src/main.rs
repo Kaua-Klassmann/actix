@@ -1,6 +1,8 @@
 use actix_web::{web, App, HttpServer};
 use actix_cors::Cors;
+use migration::MigratorTrait;
 use sea_orm::{Database, DatabaseConnection};
+use std::sync::Arc;
 
 mod config;
 mod handlers;
@@ -11,8 +13,9 @@ use routes::*;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()>{
-    let db: DatabaseConnection = Database::connect((*config::database::OPT_DB).clone())
-        .await.expect("Failed to connect in database");
+    let db: Arc<DatabaseConnection> = Arc::new(Database::connect((*config::database::OPT_DB).clone())
+        .await.expect("Failed to connect in database"));
+    migration::Migrator::up(&*db, None).await.unwrap();
 
     let app_port: u16 = dotenv::var("APP_PORT")
         .ok()
