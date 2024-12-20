@@ -29,7 +29,11 @@ async fn main() -> std::io::Result<()>{
                     .allow_any_method()
                     .allow_any_header()
             )
-            .app_data(web::Data::new( AppState { db: db.clone() } ))
+            .app_data(web::Data::new(
+                AppState {
+                    db: db.clone()
+                }
+            ))
             .configure(static_routes::configure_static_routes)
             .configure(path_routes::configure_path_routes)
             .configure(query_routes::configure_query_routes)
