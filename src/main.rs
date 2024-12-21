@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()>{
             .configure(path_routes::configure_path_routes)
             .configure(query_routes::configure_query_routes)
             .configure(json_routes::configure_json_routes)
+            .configure(sql_routes::configure_sql_routes)
     })
     .bind(("127.0.0.1", app_port))
     .unwrap()
