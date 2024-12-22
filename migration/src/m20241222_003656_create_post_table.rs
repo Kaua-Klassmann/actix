@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::m20241219_174638_create_user_table::User;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -9,44 +11,47 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(User::Table)
+                    .table(Post::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(User::Id)
-                        .integer()
+                    .col(ColumnDef::new(Post::Uuid)
+                        .uuid()
+                        .unique_key()
                         .not_null()
-                        .auto_increment()
                         .primary_key()
                     )
-                    .col(ColumnDef::new(User::Name)
+                    .col(ColumnDef::new(Post::Name)
                         .string()
                         .not_null()
                     )
-                    .col(ColumnDef::new(User::Email)
+                    .col(ColumnDef::new(Post::Image)
                         .string()
-                        .not_null()
-                        .unique_key()
                     )
-                    .col(ColumnDef::new(User::Password)
-                        .string()
+                    .col(ColumnDef::new(Post::UserId)
+                        .integer()
                         .not_null()
                     )
-                    .to_owned()
+                    .foreign_key(ForeignKey::create()
+                        .name("fk-post-user-id")
+                        .from(Post::Table, Post::UserId)
+                        .to(User::Table, User::Id)
+                    )
+                    .to_owned(),
             )
             .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(User::Table).to_owned())
+            .drop_table(Table::drop().table(Post::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum User {
+enum Post {
     Table,
-    Id,
+    Uuid,
     Name,
-    Email,
-    Password
+    Image,
+    UserId
 }
