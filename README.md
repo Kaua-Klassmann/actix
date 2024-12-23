@@ -11,3 +11,9 @@ sea-orm-cli migrate init
 ```
 sea-orm-cli migrate generate create_user_table
 ```
+
+## Gerar entities
+
+```
+sea-orm-cli generate entity -o entity/src
+```

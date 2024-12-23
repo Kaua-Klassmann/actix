@@ -9,6 +9,7 @@ dependencies = [
  "actix-cors",
  "actix-web",
  "dotenv",
+ "entity",
  "lazy_static",
  "migration",
  "sea-orm",
@@ -1011,6 +1012,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75030f3c4f45dafd7586dd6780965a8c7e8e285a5ecb86713e63a79c5b2766f3"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "entity"
+version = "0.1.0"
+dependencies = [
+ "sea-orm",
+ "serde",
 ]
 
 [[package]]
